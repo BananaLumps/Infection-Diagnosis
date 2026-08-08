@@ -1,0 +1,44 @@
+module InfectionDiagnosis
+{
+  item BlankSlide
+  {
+    ItemType = base:normal,
+    Tooltip = Tooltip_item_InfectionDiagnosis.BlankSlide,
+    Icon = MedicalSlide,
+    Weight = 0.2,
+    Tags = infectionDiagnosis:blankSlide,
+  }
+
+  item BloodSampleSlide
+  {
+    ItemType = base:normal,
+    Tooltip = Tooltip_item_InfectionDiagnosis.BloodSampleSlide,
+    ConditionMax = 100,
+    Icon = MedicalSlideBlood,
+    Weight = 0.25,
+    Tags = infectionDiagnosis:sampleSlide,
+    Infected  = false,
+    Collector = Unknown,
+    Time      = 1 Jan 12:00,
+    Inspected = false,
+  }
+
+  craftRecipe GatherBloodSlide
+  {
+    time = 120,
+    timedAction = Making,
+    Tags = InHandCraft;CanBeDoneFromFloor,
+    category = Medical,
+    SkillRequired = Doctor:1,
+    OnCreate = InfectionDiagnosisShared.OnCreateBloodSample,
+    inputs
+    {
+      item 1 [InfectionDiagnosis.BlankSlide] mode:destroy,
+      item 1 tags[Blade;SharpKnife] mode:keep flags[MayDegradeLight],
+    }
+    outputs
+    {
+      item 1 InfectionDiagnosis.BloodSampleSlide,
+    }
+  }
+}

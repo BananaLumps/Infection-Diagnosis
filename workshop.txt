@@ -1,0 +1,6 @@
+version=1
+id=3779461182
+title=Infection Diagnosis
+description=Adds a Microscope Slide item to the game which you can use to gather a blood sample and inspect it at a microscope to check for KNOX infection.
+tags=Build 42;Balance;Multiplayer;Realistic;QoL
+visibility=public
