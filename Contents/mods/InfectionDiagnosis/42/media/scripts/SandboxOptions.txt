@@ -1,0 +1,6 @@
+VERSION = 1
+
+sandbox
+{
+    InfectionDiagnosis.BladeGatherFirstAidLevel = 1,
+}
