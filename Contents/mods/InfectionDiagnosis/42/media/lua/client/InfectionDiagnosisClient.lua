@@ -1,22 +1,15 @@
---[[
-    Infection Diagnosis - Client
 
-    Adds an "Inspect Sample" world context menu option when the player
-    right-clicks a microscope while carrying a blood sample slide.
-]]
 require "TimedActions/ISWalkToTimedAction"
 require "TimedActions/InfectionDiagnosisTimedActions"
 require "InfectionDiagnosisShared"
 
 local InfectionDiagnosisClient = {}
-
 local MICROSCOPE_SPRITES = {
     ["location_community_medical_01_136"] = true,
     ["location_community_medical_01_137"] = true,
     ["location_community_medical_01_138"] = true,
     ["location_community_medical_01_139"] = true,
 }
-
 local function isMicroscope(worldObject)
     if not worldObject then
         return false
@@ -34,7 +27,6 @@ local function isMicroscope(worldObject)
 
     return MICROSCOPE_SPRITES[spriteName] == true
 end
-
 local function containsMicroscope(square)
     if not square then
         return false
@@ -74,7 +66,6 @@ local function onInspectSample(worldObjects, playerObj)
     end
     ISTimedActionQueue.add(InfectionDiagnosis_InspectSampleAction:new(playerObj, microscope, 5 * 60))
 end
-
 function InfectionDiagnosisClient.onFillWorldObjectContextMenu(playerNum, context, worldObjects, test)
     if not worldObjects or (#worldObjects < 1) then
         return
@@ -101,7 +92,6 @@ function InfectionDiagnosisClient.onFillWorldObjectContextMenu(playerNum, contex
         option.toolTip = toolTip
     end
 end
-
 Events.OnFillWorldObjectContextMenu.Add(InfectionDiagnosisClient.onFillWorldObjectContextMenu)
 
 return InfectionDiagnosisClient
