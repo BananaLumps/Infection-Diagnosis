@@ -1,6 +1,6 @@
 name=Infection Diagnosis
 id=InfectionDiagnosis
 description=Gather a blood sample on a microscope slide and inspect it with a microscope to check for KNOX infection.
-version=0.1
+version=0.2
 poster=poster.png
 icon=icon.png
