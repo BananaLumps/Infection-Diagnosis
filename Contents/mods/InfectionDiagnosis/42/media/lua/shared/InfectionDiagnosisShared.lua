@@ -58,6 +58,40 @@ function InfectionDiagnosisShared.OnCreateBloodSample(craftRecipeData, player)
     modData.Time      = getFormattedGameTime()
     result:syncItemFields()
 
+    if isServer() then
+        InfectionDiagnosisShared.ApplyCraftingDamage(player)
+    elseif isClient() then
+        local args = { bodyPart = "Hand_L", damageAmount = 10 }
+        sendClientCommand(player, "InfectionDiagnosis", "ApplySampleDamage", args)
+    else
+        InfectionDiagnosisShared.ApplyCraftingDamage(player)
+    end
+end
+
+function InfectionDiagnosisShared.ApplyCraftingDamage(player, bodyPartStr, amount, time)
+    bodyPartStr = bodyPartStr or "Hand_L"
+    amount = amount or 10
+    time = time or 5
+
+    local bodyDamage = player:getBodyDamage()
+    if bodyDamage then
+        local partType = BodyPartType.FromString(bodyPartStr)
+        local bodyPart = bodyDamage:getBodyPart(partType)
+
+        if bodyPart then
+            bodyPart:AddDamage(amount)
+            bodyPart:setScratched(true,true)
+            bodyPart:setScratchTime(time)
+            bodyPart:setBleeding(true)
+            bodyPart:setBleedingTime(time)
+            bodyPart:setAdditionalPain(amount * 2)
+
+            bodyDamage:Update()
+                        if isServer() then
+                player:sendObjectChange("bodyDamage")
+            end
+        end
+    end
 end
 
 function InfectionDiagnosisShared.hasInventorySample(player)
