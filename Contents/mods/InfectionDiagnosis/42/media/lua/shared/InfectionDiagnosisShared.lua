@@ -67,11 +67,43 @@ function InfectionDiagnosisShared.OnCreateBloodSample(craftRecipeData, player)
         InfectionDiagnosisShared.ApplyCraftingDamage(player)
     end
 end
+function InfectionDiagnosisShared.OnCreateBloodSampleAlt(craftRecipeData, player)
+    if not craftRecipeData or not player then
+        return
+    end
 
-function InfectionDiagnosisShared.ApplyCraftingDamage(player, bodyPartStr, amount, time)
+    local createdItems = craftRecipeData:getAllCreatedItems()
+    local result = createdItems and createdItems:get(0)
+    if not result then
+        return
+    end
+
+    local modData = result:getModData()
+    if not modData then
+        return
+    end
+
+    local bodyDamage  = player:getBodyDamage()
+    modData.Infected  = bodyDamage ~= nil and bodyDamage:isInfected() or false
+    modData.Collector = player:getDisplayName() or "Unknown"
+    modData.Time      = getFormattedGameTime()
+    result:syncItemFields()
+
+    if isServer() then
+        InfectionDiagnosisShared.ApplyCraftingDamage(player, "Hand_L", 1, 0.5, true)
+    elseif isClient() then
+        local args = { bodyPart = "Hand_L", damageAmount = 1 }
+        sendClientCommand(player, "InfectionDiagnosis", "ApplySampleDamage", args)
+    else
+        InfectionDiagnosisShared.ApplyCraftingDamage(player, "Hand_L", 1, 0.5, true)
+    end
+end
+
+function InfectionDiagnosisShared.ApplyCraftingDamage(player, bodyPartStr, amount, time, minor)
     bodyPartStr = bodyPartStr or "Hand_L"
     amount = amount or 10
     time = time or 5
+    minor = minor or false
 
     local bodyDamage = player:getBodyDamage()
     if bodyDamage then
@@ -80,12 +112,13 @@ function InfectionDiagnosisShared.ApplyCraftingDamage(player, bodyPartStr, amoun
 
         if bodyPart then
             bodyPart:AddDamage(amount)
-            bodyPart:setScratched(true,true)
-            bodyPart:setScratchTime(time)
             bodyPart:setBleeding(true)
             bodyPart:setBleedingTime(time)
             bodyPart:setAdditionalPain(amount * 2)
-
+            if minor ~= true then
+            bodyPart:setScratched(true,true)
+            bodyPart:setScratchTime(time)
+            end
             bodyDamage:Update()
                         if isServer() then
                 player:sendObjectChange("bodyDamage")

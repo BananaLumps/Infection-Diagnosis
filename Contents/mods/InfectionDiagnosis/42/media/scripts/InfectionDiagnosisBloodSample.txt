@@ -34,7 +34,25 @@ module InfectionDiagnosis
     inputs
     {
       item 1 [InfectionDiagnosis.BlankSlide] mode:destroy,
-      item 1 tags[Blade;SharpKnife] mode:keep flags[MayDegradeLight],
+      item 1 tags[SharpKnife] mode:keep flags[MayDegradeLight],
+    }
+    outputs
+    {
+      item 1 InfectionDiagnosis.BloodSampleSlide,
+    }
+  }
+  craftRecipe GatherBloodSlideAlt
+  {
+    time = 120,
+    timedAction = Making,
+    Tags = InHandCraft;CanBeDoneFromFloor,
+    category = Medical,
+    SkillRequired = Doctor:1,
+    OnCreate = InfectionDiagnosisShared.OnCreateBloodSampleAlt,
+    inputs
+    {
+      item 1 [InfectionDiagnosis.BlankSlide] mode:destroy,
+      item 1 tags[SewingNeedle] mode:keep,
     }
     outputs
     {
