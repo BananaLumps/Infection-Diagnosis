@@ -27,14 +27,27 @@ local function isMicroscope(worldObject)
 
     return MICROSCOPE_SPRITES[spriteName] == true
 end
+local function getSquareObjects(square)
+    if not square then
+        return {}
+    end
+
+    local rawObjects = square:getObjects()
+    local result = {}
+    for i = 0, rawObjects:size() - 1 do
+        table.insert(result, rawObjects:get(i))
+    end
+    return result
+end
+
 local function containsMicroscope(square)
     if not square then
         return false
     end
 
-    local objects = square:getObjects()
-    for i = 0, objects:size() - 1 do
-        if isMicroscope(objects:get(i)) then
+    local objects = getSquareObjects(square)
+    for i = 1, #objects do
+        if isMicroscope(objects[i]) then
             return true
         end
     end
@@ -45,9 +58,22 @@ local function findMicroscope(square)
         return nil
     end
 
-    local objects = square:getObjects()
-    for i = 0, objects:size() - 1 do
-        local obj = objects:get(i)
+    local objects = getSquareObjects(square)
+    for i = 1, #objects do
+        local obj = objects[i]
+        if isMicroscope(obj) then
+            return obj
+        end
+    end
+    return nil
+end
+local function findMicroscopeInWorldObjects(worldObjects)
+    if not worldObjects then
+        return nil
+    end
+
+    for i = 1, #worldObjects do
+        local obj = worldObjects[i]
         if isMicroscope(obj) then
             return obj
         end
@@ -73,6 +99,11 @@ function InfectionDiagnosisClient.onFillWorldObjectContextMenu(playerNum, contex
 
     local obj = worldObjects[1]
     if not obj then return end
+
+    local microscopeObject = findMicroscopeInWorldObjects(worldObjects)
+    if microscopeObject then
+        obj = microscopeObject
+    end
 
     local clickedSquare = obj:getSquare()
     if not clickedSquare then return end
